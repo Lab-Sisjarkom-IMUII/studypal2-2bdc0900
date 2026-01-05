@@ -1,0 +1,11 @@
+{
+  "name": "studypal2",
+  "framework": "react",
+  "language": "typescript",
+  "buildCommand": "vite build",
+  "startCommand": "npm run dev",
+  "domain": "studypal2",
+  "email": "rakha.guevara2505@gmail.com",
+  "secretKey": "imuii_374f1f890c9c4d9b6c938ba99bf4f0358f0cb3606905bc8dc89e0c57b0be778d",
+  "repoUrl": "https://github.com/Lab-Sisjarkom-IMUII/studypal2-2bdc0900.git"
+}
