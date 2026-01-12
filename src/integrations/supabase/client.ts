@@ -5,23 +5,32 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Validate required environment variables
+// Check if Supabase is properly configured
+export const isSupabaseConfigured = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+
+// Validate required environment variables (non-blocking)
 if (!SUPABASE_URL) {
-  throw new Error(
-    '⚠️ VITE_SUPABASE_URL is not set. Please add it to your .env file.\n' +
+  console.warn(
+    '⚠️ VITE_SUPABASE_URL is not set. Supabase features will be disabled.\n' +
+    'Please add it to your .env file or configure it in Vercel environment variables.\n' +
     'Example: VITE_SUPABASE_URL=https://your-project.supabase.co'
   );
 }
 
 if (!SUPABASE_ANON_KEY) {
-  throw new Error(
-    '⚠️ VITE_SUPABASE_ANON_KEY is not set. Please add it to your .env file.\n' +
+  console.warn(
+    '⚠️ VITE_SUPABASE_ANON_KEY is not set. Supabase features will be disabled.\n' +
+    'Please add it to your .env file or configure it in Vercel environment variables.\n' +
     'Example: VITE_SUPABASE_ANON_KEY=your-anon-key-here'
   );
 }
 
-// Create Supabase client
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+// Create Supabase client with fallback for missing configuration
+// Using placeholder values when env vars are missing to prevent crashes
+const supabaseUrl = SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = SUPABASE_ANON_KEY || 'placeholder-anon-key';
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage: localStorage,
     persistSession: true,

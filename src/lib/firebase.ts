@@ -3,16 +3,6 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// Get Firebase configuration from environment variables
-const firebaseConfig: FirebaseOptions = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
-
 // Validate required environment variables
 const requiredEnvVars = [
   'VITE_FIREBASE_API_KEY',
@@ -27,15 +17,28 @@ const missingVars = requiredEnvVars.filter(
   (varName) => !import.meta.env[varName]
 );
 
+// Check if Firebase is properly configured
+export const isFirebaseConfigured = missingVars.length === 0;
+
 if (missingVars.length > 0) {
-  throw new Error(
-    `⚠️ Missing required Firebase environment variables:\n` +
-    `${missingVars.join(', ')}\n\n` +
-    `Please add them to your .env file.\n` +
+  console.warn(
+    `⚠️ Missing required Firebase environment variables: ${missingVars.join(', ')}\n` +
+    `Firebase features will be disabled.\n` +
+    `Please add them to your .env file or configure in Vercel environment variables.\n` +
     `Copy env.template to .env and fill in your Firebase credentials.\n` +
     `Get your Firebase config from: https://console.firebase.google.com/`
   );
 }
+
+// Get Firebase configuration from environment variables with fallback
+const firebaseConfig: FirebaseOptions = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'placeholder-api-key',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'placeholder.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'placeholder-project',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'placeholder.appspot.com',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '000000000000',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:000000000000:web:placeholder',
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
